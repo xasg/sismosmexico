@@ -45,7 +45,7 @@ titulo = g.append('text')
           .attr('x', `${ancho / 2}px`)
           .attr('y', '-5px')
           .attr('text-anchor', 'middle')
-          .text('Sismos de más de 5 en entidades federativas')
+          .text('Los Edificios Más Grandes del Mundo')
           .attr('class', 'titulo-grafica')
 
 dataArray = []
