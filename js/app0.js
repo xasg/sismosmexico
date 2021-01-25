@@ -23,12 +23,13 @@ g = svg.append('g')
         .attr('height', alto + 'px')
 
 y = d3.scaleLinear()
-          .range([alto, 0])
-
+    .range([alto, 0])
 x = d3.scaleBand()
       .range([0, ancho])
       .paddingInner(0.1)
       .paddingOuter(0.3)
+dataArray = []
+
 
 color = d3.scaleOrdinal()
           // .range(['red', 'green', 'blue', 'yellow'])
@@ -48,44 +49,27 @@ titulo = g.append('text')
           .text('Sismos 1974-2000')
           .attr('class', 'titulo-grafica')
 
-//dataArray = [10, 20, 23, 12, 18, 25, 32, 28]
-dataArray = [
-   {valor:10, color: 'red' },
-   {valor:20, color: 'green' },
-   {valor:23, color: 'blue' },
-   {valor:12, color: 'orange' },
-   {valor:18, color: 'yellow' },
-   {valor:25, color: 'teal' },
-   {valor:32, color: '#cc0000' },
-   {valor:28, color: '#cc00cc' },
-   
-]
-
 
 
 // III. render (update o dibujo)
 function render(data) {
-  bars = g.selectAll('rect')
+    bars = g.selectAll('rect')
             .data(data)
 
-  bars.enter()
+    bars.enter()
       .append('rect')
-        .style('width', '50px')
-        .style('height', d => d.valor * 5)
-        .style('x', (d, i) => 50 + i * 70)
-        .style('y',0)
+        .style('width', '10px')
+        .style('height', d => (alto - y(d.magnitud)) + 'px')
+        .style('x', (d, i) => (10+ i * 20) + 'px')
+        .style('y',d => (y(d.magnitud)) + 'px')
         .style('fill', d => d.color)
-
-    
-
 }
 
 // IV. Carga de datos
-/**
 d3.csv('sismos.csv')
 .then(function(data) {
+  console.log(data)
   data.forEach(d => {
-    d.id = +d.id
     d.latitud = +d.latitud
     d.longitud = +d.longitud
     d.profundidad = +d.profundidad
@@ -97,35 +81,18 @@ d3.csv('sismos.csv')
     d.minuto = +d.minuto
     d.id = +d.id
     // damos formato como números a los valores del archivo CSV
-  })
-  //Comprobamos en consola que se haya cargado el archivo
-  console.log("Archivo cargado")
-  dataArray = data
-  console.log(dataArray)
+    })
 
-  color.domain(data.map(d => d.entidad))
+    this.dataArray = data
+    maxy = d3.max(data, d => d.magnitud)
+    y.domain([0, maxy])
 
 
-  // <select>
-  //   <option value="x">despliega</option>
-  // </select>
-  regionSelect.append('option')
-              .attr('value', 'todas')
-              .text('Todas')
-  color.domain().forEach(d => {
-    console.log(d)
-    regionSelect.append('option')
-                .attr('value', d)
-                .text(d)
-  })
 
-
-  frame()
-  
-})
-.catch(e => {
-  console.log('No se tuvo acceso al archivo ' + e.message)
-})
-*/
-  // V. Despliegue
+      // V. Despliegue
     render(dataArray)
+}).catch( e =>{
+    console.log('No se tuvo acceso al archivo' + e.message)
+})
+
+   
